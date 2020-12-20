@@ -11,7 +11,6 @@ namespace AVL
             public int Weight { get; set; }
 
             public V Value { get; set; }
-            public Node Parent { get; set; }
             public Node Left { get; set; }
             public Node Right { get; set; }
 

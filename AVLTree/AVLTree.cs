@@ -40,20 +40,14 @@ namespace AVL
             {
                 case 1: // The existing node is greather than inserted
                     if (existing.Left == null)
-                    {
                         existing.Left = inserted;
-                        inserted.Parent = existing;
-                    }
                     else
                         RecursiveInsertion(existing.Left, inserted);
                     break;
 
                 case -1: // The existing node is less than inserted
                     if (existing.Right == null)
-                    {
                         existing.Right = inserted;
-                        inserted.Parent = existing;
-                    }
                     else
                         RecursiveInsertion(existing.Right, inserted);
                     break;
@@ -163,13 +157,10 @@ namespace AVL
         private Node LeftLeftRotation(Node node)
         {
             Node c = node;
-            Node p = node.Parent;
             node = node.Left;
-            node.Parent = p;
             Node r = node.Right;
             node.Right = c;
             c.Left = r;
-            c.Parent = node;
 
             return node;
         }
@@ -182,17 +173,12 @@ namespace AVL
         private Node LeftRightRotation(Node node)
         {
             Node c = node;
-            Node p = node.Parent;
             node = node.Left.Right;
-            node.Parent = p;
             Node l = node.Left;
             Node r = node.Right;
 
             node.Left = c.Left;
-            node.Left.Parent = node;
-            
             node.Right = c;
-            node.Right.Parent = node;
 
             c.Left.Right = l;
             c.Left = r;
@@ -209,13 +195,10 @@ namespace AVL
         private Node RightRightRotation(Node node)
         {
             Node c = node;
-            Node p = node.Parent;
             node = node.Right;
-            node.Parent = p;
             Node l = node.Left;
             node.Left = c;
             c.Right = l;
-            c.Parent = node;
 
             return node;
         }
@@ -228,17 +211,12 @@ namespace AVL
         private Node RightLeftRotation(Node node)
         {
             Node c = node;
-            Node p = node.Parent;
             node = node.Right.Left;
-            node.Parent = p;
             Node l = node.Left;
             Node r = node.Right;
 
             node.Right = c.Right;
-            node.Right.Parent = node;
-
             node.Left = c;
-            node.Left.Parent = node;
 
             c.Right.Left = r;
             c.Right = l;
