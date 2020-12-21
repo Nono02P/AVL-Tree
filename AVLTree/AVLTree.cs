@@ -59,6 +59,158 @@ namespace AVL
 
         #endregion
 
+        #region Deletion
+
+        /// <summary>
+        /// Delete the element associated with a defined key.
+        /// </summary>
+        /// <param name="key">The element associated with the key to delete.</param>
+        public void Delete(K key)
+        {
+            _rootNode = RecursiveDeletion(_rootNode, key);
+            if (_rootNode != null)
+                _rootNode = RefreshTree(_rootNode);
+            
+        }
+
+        /// <summary>
+        /// Recursively calls the node and his children to find the element to remove, then removes it.
+        /// </summary>
+        /// <param name="node">The node to check (starts from the root and recursively calls the children).</param>
+        /// <param name="key">The element associated with the key to delete.</param>
+        /// <returns>True if deleted, false if the key doesn't exists.</returns>
+        private Node RecursiveDeletion(Node node, K key)
+        {
+            bool deletionError = false;
+            if (node == null)
+                deletionError = true;
+            else
+            {
+                switch (node.Key.CompareTo(key))
+                {
+                    case 1:
+                        if (node.Left != null)
+                            node.Left = RecursiveDeletion(node.Left, key);
+                        else
+                            deletionError = true;
+                        break;
+
+                    case -1:
+                        if (node.Right != null)
+                            node.Right = RecursiveDeletion(node.Right, key);
+                        else
+                            deletionError = true;
+                        break;
+
+                    default:
+                        Count--;
+                        Node current = RemoveNode(node);
+                        return RefreshTree(current);
+                }
+            }
+            if (deletionError)
+                throw new Exception($"The deletion cannot be performed on the key = ({key}) because it doesn't exists.");
+            else
+                return node;
+        }
+
+        /// <summary>
+        /// Removes the specified node and returns the new topest node.
+        /// </summary>
+        /// <param name="node">The node to remove.</param>
+        /// <returns>The new topest node.</returns>
+        private Node RemoveNode(Node node)
+        {
+            if (node.IsLeaf)
+            {
+                return null;
+            }
+            else if (node.Left != null && node.Right != null) // Node have 2 children
+            {
+                Node parent = node;
+                switch (node.Weight)
+                {
+                    case 1: // Left is heaviest
+                    case 0: // Is balanced
+                        Node biggestLeftNode = node.Left;
+                        // Find the bigest node at left side.
+                        bool hasBiggest = false;
+                        while (biggestLeftNode.Right != null)
+                        {
+                            parent = biggestLeftNode;
+                            biggestLeftNode = biggestLeftNode.Right;
+                            hasBiggest = true;
+                        }
+                        if (biggestLeftNode.Left == null)
+                        {
+                            if (biggestLeftNode != node.Left)
+                            {
+                                biggestLeftNode.Left = node.Left;
+                            }
+                        }
+                        else if (hasBiggest)
+                        {
+                            Node smallestLeftNode = biggestLeftNode.Left;
+                            while (smallestLeftNode.Left != null)
+                            {
+                                smallestLeftNode = smallestLeftNode.Left;
+                            }
+                            smallestLeftNode.Left = node.Left;
+                        }
+                        if (hasBiggest)
+                            parent.Right = null;
+                        biggestLeftNode.Right = node.Right;
+
+                        return biggestLeftNode;
+
+                    case -1: // Right is heaviest
+                        Node smallestRightNode = node.Right;
+                        // Find the smallest node at right side.
+                        bool hasSmallest = false;
+                        while (smallestRightNode.Left != null)
+                        {
+                            parent = smallestRightNode;
+                            smallestRightNode = smallestRightNode.Left;
+                            hasSmallest = true;
+                        }
+                        if (smallestRightNode.Right == null)
+                        {
+                            if (smallestRightNode != node.Right)
+                            {
+                                smallestRightNode.Right = node.Right;
+                            }
+                        }
+                        else if (hasSmallest)
+                        {
+                            Node biggestRightNode = smallestRightNode.Right;
+                            while (biggestRightNode.Right != null)
+                            {
+                                biggestRightNode = biggestRightNode.Right;
+                            }
+                            biggestRightNode.Right = node.Right;
+                        }
+                        if (hasSmallest)
+                            parent.Left = null;
+                        smallestRightNode.Left = node.Left;
+
+                        return smallestRightNode;
+
+                    default:
+                        throw new Exception("The tree is not balanced correctly before the deletion.");
+                }
+            }
+            else if (node.Left != null) // Node have 1 child at left
+            {
+                return node.Left;
+            }
+            else // Node have 1 child at right
+            {
+                return node.Right;
+            }
+        }
+
+        #endregion
+
         #region Refresh nodes
 
         /// <summary>
@@ -69,35 +221,37 @@ namespace AVL
         /// <returns></returns>
         private Node RefreshTree(Node node)
         {
-            if (node.Left == null && node.Right == null)
+            if (node != null)
             {
-                node.Depth = 1;
-                node.Weight = 0;
-            }
-            else if (node.Left != null && node.Right != null)
-            {
-                node.Left = RefreshTree(node.Left);
-                node.Right = RefreshTree(node.Right);
-                node.Depth = Math.Max(node.Left.Depth, node.Right.Depth) + 1;
-                node.Weight = node.Left.Depth - node.Right.Depth;
-            }
-            else if (node.Left != null)
-            {
-                node.Left = RefreshTree(node.Left);
-                node.Depth = node.Left.Depth + 1;
-                node.Weight = node.Left.Depth;
-            }
-            else
-            {
-                node.Right = RefreshTree(node.Right);
-                node.Depth = node.Right.Depth + 1;
-                node.Weight = -node.Right.Depth;
-            }
+                if (node.IsLeaf)
+                {
+                    node.Depth = 1;
+                    node.Weight = 0;
+                }
+                else if (node.Left != null && node.Right != null)
+                {
+                    node.Left = RefreshTree(node.Left);
+                    node.Right = RefreshTree(node.Right);
+                    node.Depth = Math.Max(node.Left.Depth, node.Right.Depth) + 1;
+                    node.Weight = node.Left.Depth - node.Right.Depth;
+                }
+                else if (node.Left != null)
+                {
+                    node.Left = RefreshTree(node.Left);
+                    node.Depth = node.Left.Depth + 1;
+                    node.Weight = node.Left.Depth;
+                }
+                else
+                {
+                    node.Right = RefreshTree(node.Right);
+                    node.Depth = node.Right.Depth + 1;
+                    node.Weight = -node.Right.Depth;
+                }
 
-            // If tree is unbalanced, it needs some rotations
-            if (Math.Abs(node.Weight) > 1)  
-                node = Rotate(node);
-
+                // If tree is unbalanced, it needs some rotations
+                if (Math.Abs(node.Weight) > 1)
+                    node = Rotate(node);
+            }
             return node;
         }
 
@@ -112,32 +266,30 @@ namespace AVL
         /// <returns>Gives the new top node after performing the rotation.</returns>
         private Node Rotate(Node node)
         {
-            switch (node.Weight)
+            switch (Math.Sign(node.Weight))
             {
-                case 2: // Need left rotation
+                case 1: // 2 Need left rotation
                     switch (node.Left.Weight)
                     {
                         case 1:
                             node = LeftLeftRotation(node);
                             break;
                         case -1:
-                            node = LeftRightRotation(node);
-                            break;
                         default:
+                            node = LeftRightRotation(node);
                             break;
                     }
                     break;
                 
-                case -2: // Need right rotation
+                case -1: // -2 Need right rotation
                     switch (node.Right.Weight)
                     {
                         case 1:
                             node = RightLeftRotation(node);
                             break;
                         case -1:
-                            node = RightRightRotation(node);
-                            break;
                         default:
+                            node = RightRightRotation(node);
                             break;
                     }
                     break;
@@ -254,20 +406,19 @@ namespace AVL
             switch (node.Key.CompareTo(key))
             {
                 case 1: // This node is greather than other
-                    if (node.Left == null)
-                        throw new Exception("This key doesnt exist");
-                    else
+                    if (node.Left != null)
                         return RecursiveGetValue(node.Left, key);
+                    break;
 
                 case -1: // This node is less than other
-                    if (node.Right == null)
-                        throw new Exception("This key doesnt exist");
-                    else
+                    if (node.Right != null)
                         return RecursiveGetValue(node.Right, key);
+                    break;
 
                 default: // This node is equal than other
                     return node.Value;
             }
+            throw new Exception("This key doesnt exist");
         }
 
         #endregion
@@ -291,23 +442,26 @@ namespace AVL
         /// <returns>An enumerator on a Tuple(Key, Value)</returns>
         private IEnumerator<Tuple<K, V>> GetEnumerator(Node node)
         {
-            if (node.Left != null)
+            if (node != null)
             {
-                IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Left);
-                while (enumerator.MoveNext())
+                if (node.Left != null)
                 {
-                    yield return enumerator.Current;
+                    IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Left);
+                    while (enumerator.MoveNext())
+                    {
+                        yield return enumerator.Current;
+                    }
                 }
-            }
 
-            yield return new Tuple<K, V>(node.Key, node.Value);
-            
-            if (node.Right != null)
-            {
-                IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Right);
-                while (enumerator.MoveNext())
+                yield return new Tuple<K, V>(node.Key, node.Value);
+
+                if (node.Right != null)
                 {
-                    yield return enumerator.Current;
+                    IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Right);
+                    while (enumerator.MoveNext())
+                    {
+                        yield return enumerator.Current;
+                    }
                 }
             }
         }
@@ -316,7 +470,10 @@ namespace AVL
 
         public override string ToString()
         {
-            return $"Count: {Count}, Depth: {_rootNode.Depth}";
+            if (_rootNode != null)
+                return $"Count: {Count}, Depth: {_rootNode.Depth}";
+            else
+                return $"Count: {Count}, Depth: {0}";
         }
     }
 }
