@@ -6,7 +6,7 @@ namespace AVL
 {
     public partial class AVLTree<K, V> : IEnumerable<Tuple<K, V>> where K : IComparable
     {
-        private Node _rootNode;
+        public Node RootNode { get; private set; }
 
         public int Count { get; private set; }
 
@@ -20,12 +20,12 @@ namespace AVL
         public void Add(K key, V value)
         {
             Node node = new Node(key, value);
-            if (_rootNode == null)
-                _rootNode = node;
+            if (RootNode == null)
+                RootNode = node;
             else
-                RecursiveInsertion(_rootNode, node);
+                RecursiveInsertion(RootNode, node);
 
-            _rootNode = RefreshTree(_rootNode);
+            RootNode = RefreshTree(RootNode);
             Count++;
         }
 
@@ -67,9 +67,9 @@ namespace AVL
         /// <param name="key">The element associated with the key to delete.</param>
         public void Delete(K key)
         {
-            _rootNode = RecursiveDeletion(_rootNode, key);
-            if (_rootNode != null)
-                _rootNode = RefreshTree(_rootNode);
+            RootNode = RecursiveDeletion(RootNode, key);
+            if (RootNode != null)
+                RootNode = RefreshTree(RootNode);
             
         }
 
@@ -387,11 +387,11 @@ namespace AVL
         /// <returns>The value associated with the key.</returns>
         public V GetValue(K key)
         {
-            if (_rootNode == null)
+            if (RootNode == null)
                 throw new Exception("The tree is empty");
             else
             {
-                return RecursiveGetValue(_rootNode, key);
+                return RecursiveGetValue(RootNode, key);
             }
         }
 
@@ -427,12 +427,12 @@ namespace AVL
 
         public IEnumerator<Tuple<K, V>> GetEnumerator()
         {
-            return GetEnumerator(_rootNode);
+            return GetEnumerator(RootNode);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator(_rootNode);
+            return GetEnumerator(RootNode);
         }
 
         /// <summary>
@@ -470,8 +470,8 @@ namespace AVL
 
         public override string ToString()
         {
-            if (_rootNode != null)
-                return $"Count: {Count}, Depth: {_rootNode.Depth}";
+            if (RootNode != null)
+                return $"Count: {Count}, Depth: {RootNode.Depth}";
             else
                 return $"Count: {Count}, Depth: {0}";
         }

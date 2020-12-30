@@ -1,0 +1,53 @@
+﻿<Window x:Class="TreeVisualization.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TreeVisualization"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        d:DataContext="{x:Static local:NodeDesignModel.Instance}">
+        
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:NodeViewModel}">
+
+            <Grid Background="White">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="25" Width="Auto"/>
+                    <ColumnDefinition MinWidth="25" Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="25" Height="Auto"/>
+                    <RowDefinition MinHeight="25" Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Ellipse Grid.ColumnSpan="2"
+                         Margin="0 15"
+                         Fill="{Binding IsRed, Converter={local:Bool2BlackRedConverter}}" 
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Width="{Binding ActualHeight, ElementName=NodeKey}"
+                         Height="{Binding ActualHeight, ElementName=NodeKey}"/>
+
+                <TextBlock x:Name="NodeKey" 
+                           Grid.ColumnSpan="2"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Padding="3"
+                           Text="{Binding Key}"
+                           FontSize="10"
+                           Foreground="White"/>
+
+                <ContentPresenter Grid.Row="1" Grid.Column="0" Content="{Binding Left}" x:Name="LeftNode"/>
+                <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{Binding Right}" x:Name="RightNode"/>
+
+            </Grid>
+
+        </DataTemplate>
+    </Window.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <ContentControl Content="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </ScrollViewer>
+
+</Window>
