@@ -27,10 +27,8 @@ namespace AVL
                 int indexToRemove = rnd.Next(list.Count);
                 int keyToRemove = list[indexToRemove];
                 list.RemoveAt(indexToRemove);
-                //Console.WriteLine($"Remove {keyToRemove}");
                 tree.Delete(keyToRemove);
 
-                bool deleted = false;
                 try
                 {
                     tree.GetValue(keyToRemove);
@@ -38,7 +36,9 @@ namespace AVL
                 catch (Exception ex)
                 {
                     if (ex.Message == "This key doesnt exist" || ex.Message == "The tree is empty")
-                        deleted = true;
+                    {
+
+                    }
                     else
                     {
                         throw;

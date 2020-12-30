@@ -1,0 +1,63 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "TreeVisualization/1.0.0": {
+        "dependencies": {
+          "AVLTree": "1.0.0",
+          "PropertyChanged.Fody": "3.3.1"
+        },
+        "runtime": {
+          "TreeVisualization.dll": {}
+        }
+      },
+      "Fody/6.3.0": {},
+      "PropertyChanged.Fody/3.3.1": {
+        "dependencies": {
+          "Fody": "6.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/PropertyChanged.dll": {
+            "assemblyVersion": "3.3.1.0",
+            "fileVersion": "3.3.1.0"
+          }
+        }
+      },
+      "AVLTree/1.0.0": {
+        "runtime": {
+          "AVLTree.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TreeVisualization/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Fody/6.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kBGlW/vBUvBSyCvFI3YICNl77gjUr0KMROlBTeBPN/+J3JMU57w1dpXPwjmU4ahdBTYLomzgxKLaJ3jVNuXuQg==",
+      "path": "fody/6.3.0",
+      "hashPath": "fody.6.3.0.nupkg.sha512"
+    },
+    "PropertyChanged.Fody/3.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/K/X8wn2IZV7Zezb+WvieOalWopFJKEcB7BrPoDFCj74VexupWdtvqriCoifSyrX0E+XhTzk0cVQd26hQ7TODg==",
+      "path": "propertychanged.fody/3.3.1",
+      "hashPath": "propertychanged.fody.3.3.1.nupkg.sha512"
+    },
+    "AVLTree/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
