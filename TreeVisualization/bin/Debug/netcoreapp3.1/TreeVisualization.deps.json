@@ -8,8 +8,8 @@
     ".NETCoreApp,Version=v3.1": {
       "TreeVisualization/1.0.0": {
         "dependencies": {
-          "AVLTree": "1.0.0",
-          "PropertyChanged.Fody": "3.3.1"
+          "PropertyChanged.Fody": "3.3.1",
+          "Trees": "1.0.0"
         },
         "runtime": {
           "TreeVisualization.dll": {}
@@ -27,7 +27,7 @@
           }
         }
       },
-      "AVLTree/1.0.0": {
+      "Trees/1.0.0": {
         "runtime": {
           "AVLTree.dll": {}
         }
@@ -54,7 +54,7 @@
       "path": "propertychanged.fody/3.3.1",
       "hashPath": "propertychanged.fody.3.3.1.nupkg.sha512"
     },
-    "AVLTree/1.0.0": {
+    "Trees/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
