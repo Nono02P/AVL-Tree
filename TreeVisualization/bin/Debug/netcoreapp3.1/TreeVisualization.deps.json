@@ -29,7 +29,7 @@
       },
       "Trees/1.0.0": {
         "runtime": {
-          "AVLTree.dll": {}
+          "Trees.dll": {}
         }
       }
     }

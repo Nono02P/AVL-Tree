@@ -4,7 +4,7 @@ namespace TreeVisualization
 {
     public static class NodeTransformationHelper
     {
-        public static NodeViewModel Transform(this AVLTree<int, int>.Node node, bool isRoot = true)
+        public static NodeViewModel Transform(this Node<int, int> node, bool isRoot = true)
         {
             NodeViewModel result = new NodeViewModel()
             {
