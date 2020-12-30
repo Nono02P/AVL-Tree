@@ -17,7 +17,7 @@ namespace TreeVisualization
             
             AVLTree<int, int> tree = new AVLTree<int, int>();
 
-            List<int> list = Enumerable.Range(0, 1000).OrderBy(a => Guid.NewGuid()).ToList();
+            List<int> list = Enumerable.Range(0, 100).OrderBy(a => Guid.NewGuid()).ToList();
 
             for (int i = 0; i < list.Count; i++)
             {
