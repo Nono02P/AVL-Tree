@@ -34,7 +34,6 @@ namespace Trees
         /// <param name="inserted">The node to insert in the tree.</param>
         private void RecursiveInsertion(RedBlackNode<K, V> inserted, RedBlackNode<K, V> existing, RedBlackNode<K, V> parent)
         {
-            RedBlackNode<K, V> r = null;
             switch (existing.Key.CompareTo(inserted.Key))
             {
                 case 1: // The existing node is greather than inserted

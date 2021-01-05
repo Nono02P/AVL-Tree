@@ -97,7 +97,7 @@ namespace TreeVisualization
                 _tree.Add(CurrentKey, CurrentValue);
                 RaisePropertyChanged("Count");
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
             Root = _tree.RootNode.Transform();
         }
 

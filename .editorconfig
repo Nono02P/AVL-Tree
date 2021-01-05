@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0067: L'événement 'SimpleCommand.CanExecuteChanged' n'est jamais utilisé
+dotnet_diagnostic.CS0067.severity = silent
