@@ -34,16 +34,16 @@ namespace TreeVisualization
         /// The attached property for this class.
         /// </summary>
         public static readonly DependencyProperty ValueProperty = DependencyProperty.RegisterAttached(
-            "Value", 
-            typeof(Property), 
-            typeof(BaseAttachedProperty<Parent, Property>), 
+            "Value",
+            typeof(Property),
+            typeof(BaseAttachedProperty<Parent, Property>),
             new UIPropertyMetadata(
                 default(Property),
                 new PropertyChangedCallback(OnValuePropertyChanged),
                 new CoerceValueCallback(OnValuePropertyUpdated)
                 )
             );
-        
+
         /// <summary>
         /// The callback event when the <see cref="ValueProperty"/> is changed.
         /// </summary>
@@ -57,7 +57,7 @@ namespace TreeVisualization
             // Call event Listeners
             (Instance as BaseAttachedProperty<Parent, Property>)?.ValueChanged?.Invoke(d, e);
         }
-        
+
         /// <summary>
         /// The callback event when the <see cref="ValueProperty"/> is changed, event if it is the same value.
         /// </summary>

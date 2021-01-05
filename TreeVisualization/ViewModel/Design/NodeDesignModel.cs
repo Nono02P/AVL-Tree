@@ -20,7 +20,6 @@
                 IsRed = true,
                 Left = new NodeDesignModel(22, 55),
             };
-            //Right = null;
         }
 
         public NodeDesignModel(int key, int value) : base()

@@ -12,6 +12,12 @@ namespace TreeVisualization
                 Key = node.Key,
                 Value = node.Value,
             };
+
+            #region Code de merde qui n'a normalement rien à foutre ici mais qui solutionne rapidement le problème dans l'immédiat
+            if (node is RedBlackNode<int, int> rbNode)
+                result.IsRed = rbNode.IsRed; 
+            #endregion
+
             if (node.HasLeftChild)
                 result.Left = node.Left.Transform(false);
 

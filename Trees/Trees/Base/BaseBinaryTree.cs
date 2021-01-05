@@ -4,13 +4,19 @@ using System.Collections.Generic;
 
 namespace Trees
 {
-    public abstract class BinaryTree<K, V> : IEnumerable<Tuple<K, V>> where K : IComparable
+    public abstract class BaseBinaryTree<K, V> : IEnumerable<Tuple<K, V>> where K : IComparable
     {
         public Node<K, V> RootNode { get; protected set; }
         public int Count { get; protected set; }
 
         public abstract void Add(K key, V value);
         public abstract void Delete(K key);
+
+        public void Clear()
+        {
+            RootNode = null;
+            Count = 0;
+        }
 
         #region Search
 

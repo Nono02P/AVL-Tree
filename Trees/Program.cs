@@ -51,7 +51,7 @@ namespace Trees
             }
 
             Console.WriteLine(tree.ToString());
-            
+
             Console.ReadLine();
         }
 

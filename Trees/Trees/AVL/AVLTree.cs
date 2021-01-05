@@ -2,7 +2,7 @@
 
 namespace Trees
 {
-    public class AVLTree<K, V> : BinaryTree<K, V> where K : IComparable
+    public class AVLTree<K, V> : BaseBinaryTree<K, V> where K : IComparable
     {
         public new AvlNode<K, V> RootNode { get { return (AvlNode<K, V>)base.RootNode; } set { base.RootNode = value; } }
 
@@ -15,7 +15,7 @@ namespace Trees
         /// <param name="value">The value associated with the key.</param>
         public override void Add(K key, V value)
         {
-            AvlNode<K, V>node = new AvlNode<K, V>(key, value);
+            AvlNode<K, V> node = new AvlNode<K, V>(key, value);
             if (RootNode == null)
                 RootNode = node;
             else
@@ -75,7 +75,7 @@ namespace Trees
         /// <param name="node">The node to check (starts from the root and recursively calls the children).</param>
         /// <param name="key">The element associated with the key to delete.</param>
         /// <returns>True if deleted, false if the key doesn't exists.</returns>
-        private AvlNode<K, V>RecursiveDeletion(AvlNode<K, V>node, K key)
+        private AvlNode<K, V> RecursiveDeletion(AvlNode<K, V> node, K key)
         {
             bool deletionError = false;
             if (node == null)
@@ -100,7 +100,7 @@ namespace Trees
 
                     default:
                         Count--;
-                        AvlNode<K, V>current = RemoveNode(node);
+                        AvlNode<K, V> current = RemoveNode(node);
                         return RefreshTree(current);
                 }
             }
@@ -115,7 +115,7 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node to remove.</param>
         /// <returns>The new topest node.</returns>
-        private AvlNode<K, V>RemoveNode(AvlNode<K, V>node)
+        private AvlNode<K, V> RemoveNode(AvlNode<K, V> node)
         {
             if (node.IsLeaf)
             {
@@ -123,12 +123,12 @@ namespace Trees
             }
             else if (node.Left != null && node.Right != null) // Node have 2 children
             {
-                AvlNode<K, V>parent = node;
+                AvlNode<K, V> parent = node;
                 switch (node.Weight)
                 {
                     case 1: // Left is heaviest
                     case 0: // Is balanced
-                        AvlNode<K, V>biggestLeftNode = node.Left;
+                        AvlNode<K, V> biggestLeftNode = node.Left;
                         // Find the bigest node at left side.
                         bool hasBiggest = false;
                         while (biggestLeftNode.Right != null)
@@ -146,7 +146,7 @@ namespace Trees
                         }
                         else if (hasBiggest)
                         {
-                            AvlNode<K, V>smallestLeftNode = biggestLeftNode.Left;
+                            AvlNode<K, V> smallestLeftNode = biggestLeftNode.Left;
                             while (smallestLeftNode.Left != null)
                             {
                                 smallestLeftNode = smallestLeftNode.Left;
@@ -160,7 +160,7 @@ namespace Trees
                         return biggestLeftNode;
 
                     case -1: // Right is heaviest
-                        AvlNode<K, V>smallestRightNode = node.Right;
+                        AvlNode<K, V> smallestRightNode = node.Right;
                         // Find the smallest node at right side.
                         bool hasSmallest = false;
                         while (smallestRightNode.Left != null)
@@ -178,7 +178,7 @@ namespace Trees
                         }
                         else if (hasSmallest)
                         {
-                            AvlNode<K, V>biggestRightNode = smallestRightNode.Right;
+                            AvlNode<K, V> biggestRightNode = smallestRightNode.Right;
                             while (biggestRightNode.Right != null)
                             {
                                 biggestRightNode = biggestRightNode.Right;
@@ -215,7 +215,7 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node to refresh (will recursively call his children).</param>
         /// <returns></returns>
-        private AvlNode<K, V>RefreshTree(AvlNode<K, V>node)
+        private AvlNode<K, V> RefreshTree(AvlNode<K, V> node)
         {
             if (node != null)
             {
@@ -260,7 +260,7 @@ namespace Trees
         /// </summary>
         /// <param name="node">The unbalanced node</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V>Rotate(AvlNode<K, V>node)
+        private AvlNode<K, V> Rotate(AvlNode<K, V> node)
         {
             switch (Math.Sign(node.Weight))
             {
@@ -302,11 +302,11 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V>LeftLeftRotation(AvlNode<K, V>node)
+        private AvlNode<K, V> LeftLeftRotation(AvlNode<K, V> node)
         {
-            AvlNode<K, V>c = node;
+            AvlNode<K, V> c = node;
             node = node.Left;
-            AvlNode<K, V>r = node.Right;
+            AvlNode<K, V> r = node.Right;
             node.Right = c;
             c.Left = r;
 
@@ -318,12 +318,12 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V>LeftRightRotation(AvlNode<K, V>node)
+        private AvlNode<K, V> LeftRightRotation(AvlNode<K, V> node)
         {
-            AvlNode<K, V>c = node;
+            AvlNode<K, V> c = node;
             node = node.Left.Right;
-            AvlNode<K, V>l = node.Left;
-            AvlNode<K, V>r = node.Right;
+            AvlNode<K, V> l = node.Left;
+            AvlNode<K, V> r = node.Right;
 
             node.Left = c.Left;
             node.Right = c;
@@ -340,11 +340,11 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V>RightRightRotation(AvlNode<K, V>node)
+        private AvlNode<K, V> RightRightRotation(AvlNode<K, V> node)
         {
-            AvlNode<K, V>c = node;
+            AvlNode<K, V> c = node;
             node = node.Right;
-            AvlNode<K, V>l = node.Left;
+            AvlNode<K, V> l = node.Left;
             node.Left = c;
             c.Right = l;
 
@@ -356,12 +356,12 @@ namespace Trees
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V>RightLeftRotation(AvlNode<K, V>node)
+        private AvlNode<K, V> RightLeftRotation(AvlNode<K, V> node)
         {
-            AvlNode<K, V>c = node;
+            AvlNode<K, V> c = node;
             node = node.Right.Left;
-            AvlNode<K, V>l = node.Left;
-            AvlNode<K, V>r = node.Right;
+            AvlNode<K, V> l = node.Left;
+            AvlNode<K, V> r = node.Right;
 
             node.Right = c.Right;
             node.Left = c;

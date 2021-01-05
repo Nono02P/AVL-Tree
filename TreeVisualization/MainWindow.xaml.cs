@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using Trees;
 
 namespace TreeVisualization
@@ -14,18 +11,6 @@ namespace TreeVisualization
         public MainWindow()
         {
             InitializeComponent();
-            
-            AVLTree<int, int> tree = new AVLTree<int, int>();
-
-            List<int> list = Enumerable.Range(0, 100).OrderBy(a => Guid.NewGuid()).ToList();
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                int item = list[i];
-                tree.Add(item, item);
-            }
-
-            DataContext = tree.RootNode.Transform();
         }
     }
 }
