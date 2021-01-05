@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace AVL
+namespace Trees
 {
-    public partial class AVLTree<K, V> : IEnumerable<Tuple<K, V>> where K : IComparable
+    public class AVLTree<K, V> : BaseBinaryTree<K, V> where K : IComparable
     {
-        public Node RootNode { get; private set; }
-
-        public int Count { get; private set; }
+        public new AvlNode<K, V> RootNode { get { return (AvlNode<K, V>)base.RootNode; } set { base.RootNode = value; } }
 
         #region Insertion
 
@@ -17,9 +13,9 @@ namespace AVL
         /// </summary>
         /// <param name="key">The key of the element.</param>
         /// <param name="value">The value associated with the key.</param>
-        public void Add(K key, V value)
+        public override void Add(K key, V value)
         {
-            Node node = new Node(key, value);
+            AvlNode<K, V> node = new AvlNode<K, V>(key, value);
             if (RootNode == null)
                 RootNode = node;
             else
@@ -34,7 +30,7 @@ namespace AVL
         /// </summary>
         /// <param name="existing">The current node (already exists in the tree).</param>
         /// <param name="inserted">The node to insert in the tree.</param>
-        private void RecursiveInsertion(Node existing, Node inserted)
+        private void RecursiveInsertion(Node<K, V> existing, Node<K, V> inserted)
         {
             switch (existing.Key.CompareTo(inserted.Key))
             {
@@ -65,12 +61,12 @@ namespace AVL
         /// Delete the element associated with a defined key.
         /// </summary>
         /// <param name="key">The element associated with the key to delete.</param>
-        public void Delete(K key)
+        public override void Delete(K key)
         {
             RootNode = RecursiveDeletion(RootNode, key);
             if (RootNode != null)
                 RootNode = RefreshTree(RootNode);
-            
+
         }
 
         /// <summary>
@@ -79,7 +75,7 @@ namespace AVL
         /// <param name="node">The node to check (starts from the root and recursively calls the children).</param>
         /// <param name="key">The element associated with the key to delete.</param>
         /// <returns>True if deleted, false if the key doesn't exists.</returns>
-        private Node RecursiveDeletion(Node node, K key)
+        private AvlNode<K, V> RecursiveDeletion(AvlNode<K, V> node, K key)
         {
             bool deletionError = false;
             if (node == null)
@@ -104,7 +100,7 @@ namespace AVL
 
                     default:
                         Count--;
-                        Node current = RemoveNode(node);
+                        AvlNode<K, V> current = RemoveNode(node);
                         return RefreshTree(current);
                 }
             }
@@ -119,7 +115,7 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node to remove.</param>
         /// <returns>The new topest node.</returns>
-        private Node RemoveNode(Node node)
+        private AvlNode<K, V> RemoveNode(AvlNode<K, V> node)
         {
             if (node.IsLeaf)
             {
@@ -127,12 +123,12 @@ namespace AVL
             }
             else if (node.Left != null && node.Right != null) // Node have 2 children
             {
-                Node parent = node;
+                AvlNode<K, V> parent = node;
                 switch (node.Weight)
                 {
                     case 1: // Left is heaviest
                     case 0: // Is balanced
-                        Node biggestLeftNode = node.Left;
+                        AvlNode<K, V> biggestLeftNode = node.Left;
                         // Find the bigest node at left side.
                         bool hasBiggest = false;
                         while (biggestLeftNode.Right != null)
@@ -150,7 +146,7 @@ namespace AVL
                         }
                         else if (hasBiggest)
                         {
-                            Node smallestLeftNode = biggestLeftNode.Left;
+                            AvlNode<K, V> smallestLeftNode = biggestLeftNode.Left;
                             while (smallestLeftNode.Left != null)
                             {
                                 smallestLeftNode = smallestLeftNode.Left;
@@ -164,7 +160,7 @@ namespace AVL
                         return biggestLeftNode;
 
                     case -1: // Right is heaviest
-                        Node smallestRightNode = node.Right;
+                        AvlNode<K, V> smallestRightNode = node.Right;
                         // Find the smallest node at right side.
                         bool hasSmallest = false;
                         while (smallestRightNode.Left != null)
@@ -182,7 +178,7 @@ namespace AVL
                         }
                         else if (hasSmallest)
                         {
-                            Node biggestRightNode = smallestRightNode.Right;
+                            AvlNode<K, V> biggestRightNode = smallestRightNode.Right;
                             while (biggestRightNode.Right != null)
                             {
                                 biggestRightNode = biggestRightNode.Right;
@@ -219,7 +215,7 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node to refresh (will recursively call his children).</param>
         /// <returns></returns>
-        private Node RefreshTree(Node node)
+        private AvlNode<K, V> RefreshTree(AvlNode<K, V> node)
         {
             if (node != null)
             {
@@ -264,7 +260,7 @@ namespace AVL
         /// </summary>
         /// <param name="node">The unbalanced node</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private Node Rotate(Node node)
+        private AvlNode<K, V> Rotate(AvlNode<K, V> node)
         {
             switch (Math.Sign(node.Weight))
             {
@@ -280,7 +276,7 @@ namespace AVL
                             break;
                     }
                     break;
-                
+
                 case -1: // -2 Need right rotation
                     switch (node.Right.Weight)
                     {
@@ -293,7 +289,7 @@ namespace AVL
                             break;
                     }
                     break;
-                
+
                 default:
                     break;
             }
@@ -306,11 +302,11 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private Node LeftLeftRotation(Node node)
+        private AvlNode<K, V> LeftLeftRotation(AvlNode<K, V> node)
         {
-            Node c = node;
+            AvlNode<K, V> c = node;
             node = node.Left;
-            Node r = node.Right;
+            AvlNode<K, V> r = node.Right;
             node.Right = c;
             c.Left = r;
 
@@ -322,12 +318,12 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private Node LeftRightRotation(Node node)
+        private AvlNode<K, V> LeftRightRotation(AvlNode<K, V> node)
         {
-            Node c = node;
+            AvlNode<K, V> c = node;
             node = node.Left.Right;
-            Node l = node.Left;
-            Node r = node.Right;
+            AvlNode<K, V> l = node.Left;
+            AvlNode<K, V> r = node.Right;
 
             node.Left = c.Left;
             node.Right = c;
@@ -344,11 +340,11 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private Node RightRightRotation(Node node)
+        private AvlNode<K, V> RightRightRotation(AvlNode<K, V> node)
         {
-            Node c = node;
+            AvlNode<K, V> c = node;
             node = node.Right;
-            Node l = node.Left;
+            AvlNode<K, V> l = node.Left;
             node.Left = c;
             c.Right = l;
 
@@ -360,12 +356,12 @@ namespace AVL
         /// </summary>
         /// <param name="node">The node on which apply the rotation.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
-        private Node RightLeftRotation(Node node)
+        private AvlNode<K, V> RightLeftRotation(AvlNode<K, V> node)
         {
-            Node c = node;
+            AvlNode<K, V> c = node;
             node = node.Right.Left;
-            Node l = node.Left;
-            Node r = node.Right;
+            AvlNode<K, V> l = node.Left;
+            AvlNode<K, V> r = node.Right;
 
             node.Right = c.Right;
             node.Left = c;
@@ -377,103 +373,5 @@ namespace AVL
         }
 
         #endregion
-
-        #region Search
-
-        /// <summary>
-        /// Get the value from a key.
-        /// </summary>
-        /// <param name="key">The key associated with the value to return.</param>
-        /// <returns>The value associated with the key.</returns>
-        public V GetValue(K key)
-        {
-            if (RootNode == null)
-                throw new Exception("The tree is empty");
-            else
-            {
-                return RecursiveGetValue(RootNode, key);
-            }
-        }
-
-        /// <summary>
-        /// Recursively call the children nodes to find the value associated with the key.
-        /// </summary>
-        /// <param name="node">The current node to look at.</param>
-        /// <param name="key">The key associated with the value to return.</param>
-        /// <returns>The value associated with the key.</returns>
-        private V RecursiveGetValue(Node node, K key)
-        {
-            switch (node.Key.CompareTo(key))
-            {
-                case 1: // This node is greather than other
-                    if (node.Left != null)
-                        return RecursiveGetValue(node.Left, key);
-                    break;
-
-                case -1: // This node is less than other
-                    if (node.Right != null)
-                        return RecursiveGetValue(node.Right, key);
-                    break;
-
-                default: // This node is equal than other
-                    return node.Value;
-            }
-            throw new Exception("This key doesnt exist");
-        }
-
-        #endregion
-
-        #region IEnumerable implementations
-
-        public IEnumerator<Tuple<K, V>> GetEnumerator()
-        {
-            return GetEnumerator(RootNode);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator(RootNode);
-        }
-
-        /// <summary>
-        /// Recursively enumerate each children to return the Tuple(Key, Value).
-        /// </summary>
-        /// <param name="node">The current node (recursively call his children).</param>
-        /// <returns>An enumerator on a Tuple(Key, Value)</returns>
-        private IEnumerator<Tuple<K, V>> GetEnumerator(Node node)
-        {
-            if (node != null)
-            {
-                if (node.Left != null)
-                {
-                    IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Left);
-                    while (enumerator.MoveNext())
-                    {
-                        yield return enumerator.Current;
-                    }
-                }
-
-                yield return new Tuple<K, V>(node.Key, node.Value);
-
-                if (node.Right != null)
-                {
-                    IEnumerator<Tuple<K, V>> enumerator = GetEnumerator(node.Right);
-                    while (enumerator.MoveNext())
-                    {
-                        yield return enumerator.Current;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        public override string ToString()
-        {
-            if (RootNode != null)
-                return $"Count: {Count}, Depth: {RootNode.Depth}";
-            else
-                return $"Count: {Count}, Depth: {0}";
-        }
     }
 }

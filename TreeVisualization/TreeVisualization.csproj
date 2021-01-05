@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AVLTree\AVLTree.csproj" />
+    <ProjectReference Include="..\Trees\Trees.csproj" />
   </ItemGroup>
 
 </Project>

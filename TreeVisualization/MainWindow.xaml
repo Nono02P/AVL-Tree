@@ -5,68 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TreeVisualization"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="200" MinWidth="200" Height="Auto" Width="Auto"
-        d:DataContext="{x:Static local:NodeDesignModel.Instance}">
-        
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type local:NodeViewModel}">
+        Title="MainWindow" MinHeight="200" MinWidth="330" Height="Auto" Width="Auto"
+        d:DataContext="{x:Static local:TreeDesignModel.Instance}">
+    
+    <Window.DataContext>
+        <local:TreeViewModel/>
+    </Window.DataContext>
+
+    <Border Margin="10">
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <!-- Commands area -->
+                <RowDefinition Height="Auto"/>
+                <!-- Counter Area -->
+                <RowDefinition Height="Auto"/>
+                <!-- Tree area -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             
-            <Grid Background="White">
+            <!-- Commands area -->
+            <Border Margin="10" BorderBrush="Gray" BorderThickness="0.5" x:Name="CommandBorder" CornerRadius="10">
+                <StackPanel Orientation="Vertical">
+                    <!-- Tree type selection -->
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Binary Tree" Margin="10" Command="{Binding GenerateBinaryTreeCommand}"/>
+                        <RadioButton Content="AVL Tree" Margin="10" Command="{Binding GenerateAVLTreeCommand}" IsChecked="True"/>
+                        <RadioButton Content="Red Black Tree" Margin="10" Command="{Binding GenerateRedBlackTreeCommand}"/>
+                    </StackPanel>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="7" Width="*"/>
-                    <ColumnDefinition MinWidth="7" Width="*"/>
-                    <ColumnDefinition MinWidth="7" Width="*"/>
-                    <ColumnDefinition MinWidth="7" Width="*"/>
-                </Grid.ColumnDefinitions>
+                    <!-- Key Value entries -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="50" Width="Auto"/>
+                            <ColumnDefinition MinWidth="100" Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="25" Height="Auto"/>
-                    <RowDefinition Height="1"/>
-                    <RowDefinition MinHeight="25" Height="*"/>
-                </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                <Line Stroke="Black" StrokeThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Top"
-                      Y2="{Binding Margin.Top, ElementName=Circle}"
-                      Visibility="{Binding IsRoot, Converter={local:Bool2VisibilityHiddenConverter}, ConverterParameter=true}"/>
+                        <TextBlock Grid.Row="0" Margin="5" Text="Key"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CurrentKey}"/>
 
-                <Ellipse Grid.ColumnSpan="4"
-                         x:Name="Circle"
-                         Margin="0 10 0 10"
-                         Fill="{Binding IsRed, Converter={local:Bool2BlackRedConverter}}" 
-                         HorizontalAlignment="Center" VerticalAlignment="Center"
-                         Width="{Binding ActualHeight, ElementName=NodeKey}"
-                         Height="{Binding ActualHeight, ElementName=NodeKey}"/>
-                
-                <TextBlock x:Name="NodeKey" 
-                           Grid.ColumnSpan="4"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Padding="3"
-                           Text="{Binding Key}"
-                           FontSize="10"
-                           Foreground="White"/>
+                        <TextBlock Grid.Row="1" Margin="5"  Text="Value"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding CurrentValue}"/>
+                    </Grid>
 
-                <Line Stroke="Black" StrokeThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                      Visibility="{Binding IsLeaf, Converter={local:Bool2VisibilityHiddenConverter}, ConverterParameter=true}"
-                      Y1="{Binding Margin.Bottom, ElementName=Circle}"
-                      Y2="{Binding Margin.Top, ElementName=RightNode}"/>
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button Padding="5" Margin="5" Content="Add" Command="{Binding AddCommand}"/>
+                        <Button Padding="5" Margin="5" Content="Delete" Command="{Binding DeleteCommand}"/>
+                        <Button Padding="5" Margin="5" Content="Clear" Command="{Binding ClearCommand}"/>
+                    </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="1" Background="Black"
-                        Visibility="{Binding HasLeftNode, Converter={local:Bool2VisibilityHiddenConverter}}"/>
-                
-                <Border Grid.Row="1" Grid.Column="2" Background="Black" 
-                        Visibility="{Binding HasRightNode, Converter={local:Bool2VisibilityHiddenConverter}}"/>
+                    <!-- Randomize tree -->
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBlock VerticalAlignment="Center" Text="Number of nodes to generate :"/>
+                        <TextBox Margin="5" VerticalAlignment="Center" Text="{Binding NbNodesToGenerate}" MinWidth="50"/>
+                        <Button Padding="2" Margin="5" VerticalAlignment="Center" Content="Random insertion" Command="{Binding RandomizeInsertionCommand}"/>
+                        <Button Padding="2" Margin="5" VerticalAlignment="Center" Content="Ascending insertion" Command="{Binding AscendingInsertionCommand}"/>
+                        <Button Padding="2" Margin="5" VerticalAlignment="Center" Content="Descending insertion" Command="{Binding DescendingInsertionCommand}"/>
+                    </StackPanel>
 
-                <ContentPresenter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Content="{Binding Left}" x:Name="LeftNode"/>
-                <ContentPresenter Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Content="{Binding Right}" x:Name="RightNode"/>
+                </StackPanel>
+            </Border>
 
-            </Grid>
+            <!-- Counter Area -->
+            <StackPanel Grid.Row="1" Margin="10 0" Orientation="Horizontal">
+                <TextBlock Text="Nodes counter : "/>
+                <TextBlock Text="{Binding Count}"/>
+            </StackPanel>
 
-        </DataTemplate>
-    </Window.Resources>
+            <!-- Tree area -->
+            <ScrollViewer Grid.Row="2" HorizontalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <local:TreeControl Content="{Binding Root}"/>
+            </ScrollViewer>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <ContentControl Content="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    </ScrollViewer>
-
+        </Grid>
+    </Border>
 </Window>

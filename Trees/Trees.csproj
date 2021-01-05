@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B8DEAA25-F41F-41C2-98DB-AA9F6BD2DF22}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AVLTree</RootNamespace>
-    <AssemblyName>AVLTree</AssemblyName>
+    <RootNamespace>Trees</RootNamespace>
+    <AssemblyName>Trees</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,13 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AVLTree.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Trees\AVL\AvlNode.cs" />
+    <Compile Include="Trees\Base\Node.cs" />
+    <Compile Include="Trees\AVL\AVLTree.cs" />
+    <Compile Include="Trees\Base\BaseBinaryTree.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trees\BinaryTree\BinaryTree.cs" />
+    <Compile Include="Trees\RedBlack\RedBlackNode.cs" />
+    <Compile Include="Trees\RedBlack\RedBlackTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

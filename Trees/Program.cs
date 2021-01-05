@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace AVL
+namespace Trees
 {
     class Program
     {
@@ -51,7 +51,7 @@ namespace AVL
             }
 
             Console.WriteLine(tree.ToString());
-            
+
             Console.ReadLine();
         }
 
