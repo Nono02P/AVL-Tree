@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Trees\RedBlack\Ancesters.cs" />
     <Compile Include="Trees\AVL\AvlNode.cs" />
     <Compile Include="Trees\Base\Node.cs" />
     <Compile Include="Trees\AVL\AVLTree.cs" />

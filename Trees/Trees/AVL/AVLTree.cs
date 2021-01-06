@@ -268,11 +268,11 @@ namespace Trees
                     switch (node.Left.Weight)
                     {
                         case 1:
-                            node = LeftLeftRotation(node);
+                            node = (AvlNode<K, V>)LeftLeftRotation(node);
                             break;
                         case -1:
                         default:
-                            node = LeftRightRotation(node);
+                            node = (AvlNode<K, V>)LeftRightRotation(node);
                             break;
                     }
                     break;
@@ -281,11 +281,11 @@ namespace Trees
                     switch (node.Right.Weight)
                     {
                         case 1:
-                            node = RightLeftRotation(node);
+                            node = (AvlNode<K, V>)RightLeftRotation(node);
                             break;
                         case -1:
                         default:
-                            node = RightRightRotation(node);
+                            node = (AvlNode<K, V>)RightRightRotation(node);
                             break;
                     }
                     break;
@@ -295,81 +295,6 @@ namespace Trees
             }
             // After a rotation, recalculate depth/weight of the node and his children 
             return RefreshTree(node);
-        }
-
-        /// <summary>
-        /// Performs a left-left rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V> LeftLeftRotation(AvlNode<K, V> node)
-        {
-            AvlNode<K, V> c = node;
-            node = node.Left;
-            AvlNode<K, V> r = node.Right;
-            node.Right = c;
-            c.Left = r;
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a left-right rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V> LeftRightRotation(AvlNode<K, V> node)
-        {
-            AvlNode<K, V> c = node;
-            node = node.Left.Right;
-            AvlNode<K, V> l = node.Left;
-            AvlNode<K, V> r = node.Right;
-
-            node.Left = c.Left;
-            node.Right = c;
-
-            c.Left.Right = l;
-            c.Left = r;
-
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a right-right rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V> RightRightRotation(AvlNode<K, V> node)
-        {
-            AvlNode<K, V> c = node;
-            node = node.Right;
-            AvlNode<K, V> l = node.Left;
-            node.Left = c;
-            c.Right = l;
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a right-left rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private AvlNode<K, V> RightLeftRotation(AvlNode<K, V> node)
-        {
-            AvlNode<K, V> c = node;
-            node = node.Right.Left;
-            AvlNode<K, V> l = node.Left;
-            AvlNode<K, V> r = node.Right;
-
-            node.Right = c.Right;
-            node.Left = c;
-
-            c.Right.Left = r;
-            c.Right = l;
-
-            return node;
         }
 
         #endregion

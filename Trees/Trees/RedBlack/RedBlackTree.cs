@@ -30,8 +30,9 @@ namespace Trees
         /// <summary>
         /// Recursively call the children (from the root node) to insert the new node at the correct place.
         /// </summary>
-        /// <param name="existing">The current node (already exists in the tree).</param>
         /// <param name="inserted">The node to insert in the tree.</param>
+        /// <param name="existing">The current node (already exists in the tree).</param>
+        /// <param name="parent">The parent of the current node (already exists in the tree).</param>
         private void RecursiveInsertion(RedBlackNode<K, V> inserted, RedBlackNode<K, V> existing, RedBlackNode<K, V> parent)
         {
             switch (existing.Key.CompareTo(inserted.Key))
@@ -79,23 +80,25 @@ namespace Trees
         #region Refresh nodes
 
         /// <summary>
-        /// A recursive method to refresh the tree by calculating the depth/weight of a node and his children. 
-        /// If necessary performs rotation.
+        /// A recursive method to refresh the tree by checking the different scenario of the red black tree. 
+        /// If necessary performs rotation and recolor nodes.
         /// </summary>
-        /// <param name="node">The node to refresh (will recursively call his children).</param>
-        /// <returns></returns>
+        /// <param name="node">The node to refresh.</param>
+        /// <param name="parent">The parent of the node to refresh.</param>
+        /// <param name="grandParent">The grandparent of the node to refresh.</param>
         private void RefreshTree(RedBlackNode<K, V> node, RedBlackNode<K, V> parent, RedBlackNode<K, V> grandParent)
         {
             if (node != null)
             {
-                if (parent == null) // Root node
-                    node.IsRed = false;
-                else if (parent.IsBlack)  // If parent is black, the tree is correct
+                if (node == RootNode) // the node is the Root node
+                    node.IsBlack = true;
+                else if (parent.IsBlack)  // If parent is black, the tree is already correct
                     return;
                 else
                 {
                     RedBlackNode<K, V> uncle = GetBrother(parent, grandParent);
-                    if (uncle != null && uncle.IsRed)
+                    Ancesters<K, V> ancesters = SearchAncesters(grandParent, RootNode);   // Find ancesters (parent and grandparent) of the grandparent node.
+                    if (uncle != null && uncle.IsRed)   // If uncle is red : recolor parent, uncle, and grandparent (is it is not the root). 
                     {
                         parent.IsBlack = true;
                         uncle.IsBlack = true;
@@ -103,24 +106,26 @@ namespace Trees
                         if (grandParent != RootNode)
                             grandParent.IsRed = true;
 
-                        Tuple<RedBlackNode<K, V>, RedBlackNode<K, V>> ancesters = SearchAncesters(grandParent, RootNode);
-                        RefreshTree(grandParent, ancesters.Item1, ancesters.Item2);
+                        RefreshTree(grandParent, ancesters.Parent, ancesters.GrandParent); // Then refresh the grandparent.
                     }
-                    else
+                    else // If there is no uncle or if it is a black uncle.
                     {
-                        Tuple<RedBlackNode<K, V>, RedBlackNode<K, V>> ancesters = SearchAncesters(grandParent, RootNode);
-                        if (ancesters.Item1 != null)
+                        // Find the position of the grandparent in the tree. 
+                        // Performs the rotation and put in place the new topmost node
+                        if (ancesters.Parent != null)
                         {
-                            if (ancesters.Item1.Left == grandParent)
-                                ancesters.Item1.Left = Rotate(node, parent, grandParent);
-                            else if (ancesters.Item1.Right == grandParent)
-                                ancesters.Item1.Right = Rotate(node, parent, grandParent);
+                            if (ancesters.Parent.Left == grandParent)
+                                ancesters.Parent.Left = Rotate(node, parent, grandParent);
+                            else if (ancesters.Parent.Right == grandParent)
+                                ancesters.Parent.Right = Rotate(node, parent, grandParent);
                         }
-                        else 
+                        else
                             RootNode = Rotate(node, parent, grandParent);
                     }
                 }
             }
+            else
+                throw new Exception("The node to refresh could not be null");
         }
 
         #endregion
@@ -128,121 +133,53 @@ namespace Trees
         #region Rotations
 
         /// <summary>
-        /// Determines the rotation to do from the unbalanced node.
+        /// Determines the rotation to do depending of the position of the node in his ancesters.
         /// </summary>
-        /// <param name="node">The unbalanced node</param>
+        /// <param name="node">The future topmost node.</param>
         /// <returns>Gives the new top node after performing the rotation.</returns>
         private RedBlackNode<K, V> Rotate(RedBlackNode<K, V> node, RedBlackNode<K, V> parent, RedBlackNode<K, V> grandParent)
         {
-            if (node == grandParent.Left?.Right)
+            grandParent.IsRed = true;
+
+            if (parent == grandParent.Left)
             {
-                node.IsBlack = true;
-                grandParent.IsRed = true;
-                return LeftRightRotation(grandParent);
+                if (node == parent.Left)        // Left-Left
+                {
+                    parent.IsBlack = true;
+                    return (RedBlackNode<K, V>)LeftLeftRotation(grandParent);
+                }
+                else if (node == parent.Right)  // Left-Right
+                {
+                    node.IsBlack = true;
+                    return (RedBlackNode<K, V>)LeftRightRotation(grandParent);
+                }
             }
-            else if (node == grandParent.Right?.Left)
+            else if (parent == grandParent.Right)
             {
-                node.IsBlack = true;
-                grandParent.IsRed = true;
-                return RightLeftRotation(grandParent);
+                if (node == parent.Left)        // Right-Left
+                {
+                    node.IsBlack = true;
+                    return (RedBlackNode<K, V>)RightLeftRotation(grandParent);
+                }
+                else if (node == parent.Right)  // Right-Right
+                {
+                    parent.IsBlack = true;
+                    return (RedBlackNode<K, V>)RightRightRotation(grandParent);
+                }
             }
-            else if (node == grandParent.Left?.Left)
-            {
-                parent.IsBlack = true;
-                grandParent.IsRed = true;
-                return LeftLeftRotation(grandParent);
-            }
-            else if (node == grandParent.Right?.Right)
-            {
-                parent.IsBlack = true;
-                grandParent.IsRed = true;
-                return RightRightRotation(grandParent);
-            }
-            else
-            {
-                throw new Exception("Unexpected rotation");
-            }
-        }
-
-        /// <summary>
-        /// Performs a left-left rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private RedBlackNode<K, V> LeftLeftRotation(RedBlackNode<K, V> node)
-        {
-            RedBlackNode<K, V> c = node;
-            node = node.Left;
-            RedBlackNode<K, V> r = node.Right;
-            node.Right = c;
-            c.Left = r;
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a left-right rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private RedBlackNode<K, V> LeftRightRotation(RedBlackNode<K, V> node)
-        {
-            RedBlackNode<K, V> c = node;
-            node = node.Left.Right;
-            RedBlackNode<K, V> l = node.Left;
-            RedBlackNode<K, V> r = node.Right;
-
-            node.Left = c.Left;
-            node.Right = c;
-
-            c.Left.Right = l;
-            c.Left = r;
-
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a right-right rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private RedBlackNode<K, V> RightRightRotation(RedBlackNode<K, V> node)
-        {
-            RedBlackNode<K, V> c = node;
-            node = node.Right;
-            RedBlackNode<K, V> l = node.Left;
-            node.Left = c;
-            c.Right = l;
-
-            return node;
-        }
-
-        /// <summary>
-        /// Performs a right-left rotation from a given node.
-        /// </summary>
-        /// <param name="node">The node on which apply the rotation.</param>
-        /// <returns>Gives the new top node after performing the rotation.</returns>
-        private RedBlackNode<K, V> RightLeftRotation(RedBlackNode<K, V> node)
-        {
-            RedBlackNode<K, V> c = node;
-            node = node.Right.Left;
-            RedBlackNode<K, V> l = node.Left;
-            RedBlackNode<K, V> r = node.Right;
-
-            node.Right = c.Right;
-            node.Left = c;
-
-            c.Right.Left = r;
-            c.Right = l;
-
-            return node;
+            throw new Exception("Unexpected rotation");
         }
 
         #endregion
 
-        #region Helper method
+        #region Searching familly methods
 
+        /// <summary>
+        /// Get the brother of a specific node.
+        /// </summary>
+        /// <param name="node">The node that need to find his brother.</param>
+        /// <param name="parent">The common parent of the nodes.</param>
+        /// <returns>The brother of the specified <paramref name="node"/>.</returns>
         private RedBlackNode<K, V> GetBrother(RedBlackNode<K, V> node, RedBlackNode<K, V> parent)
         {
             if (parent != null)
@@ -255,7 +192,15 @@ namespace Trees
             return null;
         }
 
-        private Tuple<RedBlackNode<K, V>, RedBlackNode<K, V>> SearchAncesters(RedBlackNode<K, V> searchedNode, RedBlackNode<K, V> currentNode, RedBlackNode<K, V> parent = null, RedBlackNode<K, V> grandParent = null)
+        /// <summary>
+        /// Search the ancesters (parent, grandparent) of the <paramref name="searchedNode"/>.
+        /// </summary>
+        /// <param name="searchedNode">The node which need to find his ancesters.</param>
+        /// <param name="currentNode">The current node (starts typically from the root node and recursively search in the successor).</param>
+        /// <param name="parent">The parent of the current node.</param>
+        /// <param name="grandParent">The grandparent of the current node.</param>
+        /// <returns>The ancesters of the specified <paramref name="searchedNode"/>.</returns>
+        private Ancesters<K, V> SearchAncesters(RedBlackNode<K, V> searchedNode, RedBlackNode<K, V> currentNode, RedBlackNode<K, V> parent = null, RedBlackNode<K, V> grandParent = null)
         {
             switch (currentNode.Key.CompareTo(searchedNode.Key))
             {
@@ -266,7 +211,7 @@ namespace Trees
                     return SearchAncesters(searchedNode, currentNode.Right, currentNode, parent);
 
                 default: // The currentNode is the searchedNode
-                    return new Tuple<RedBlackNode<K, V>, RedBlackNode<K, V>>(parent, grandParent);
+                    return new Ancesters<K, V>(parent, grandParent);
             }
         }
 

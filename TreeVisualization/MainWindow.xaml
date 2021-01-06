@@ -27,10 +27,11 @@
             <!-- Commands area -->
             <Border Margin="10" BorderBrush="Gray" BorderThickness="0.5" x:Name="CommandBorder" CornerRadius="10">
                 <StackPanel Orientation="Vertical">
+                    
                     <!-- Tree type selection -->
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Binary Tree" Margin="10" Command="{Binding GenerateBinaryTreeCommand}"/>
-                        <RadioButton Content="AVL Tree" Margin="10" Command="{Binding GenerateAVLTreeCommand}" IsChecked="True"/>
+                        <RadioButton Content="Binary Tree" Margin="10" Command="{Binding GenerateBinaryTreeCommand}" IsChecked="True"/>
+                        <RadioButton Content="AVL Tree" Margin="10" Command="{Binding GenerateAVLTreeCommand}"/>
                         <RadioButton Content="Red Black Tree" Margin="10" Command="{Binding GenerateRedBlackTreeCommand}"/>
                     </StackPanel>
 

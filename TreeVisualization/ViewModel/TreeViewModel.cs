@@ -33,7 +33,7 @@ namespace TreeVisualization
         #region Constructor
         public TreeViewModel()
         {
-            _tree = new AVLTree<int, int>();
+            _tree = new BinaryTree<int, int>();
 
             GenerateBinaryTreeCommand = new SimpleCommand(GenerateBinaryTree);
             GenerateAVLTreeCommand = new SimpleCommand(GenerateAVLTree);
@@ -148,7 +148,7 @@ namespace TreeVisualization
                 _tree.Delete(CurrentKey);
                 RaisePropertyChanged("Count");
             }
-            catch { }
+            catch (Exception) { }
             Root = _tree.RootNode.Transform();
         }
 
